@@ -6,7 +6,6 @@ CREATE TABLE `users` (
   `nickname` varchar(50) DEFAULT '' COMMENT '昵称',
   `avatar` varchar(255) DEFAULT '' COMMENT '头像URL',
   `status` tinyint DEFAULT 1 COMMENT '状态(0:禁用,1:正常)',
-  `last_login_at` datetime NULL COMMENT '最后登录时间',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),

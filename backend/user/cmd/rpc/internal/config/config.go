@@ -9,4 +9,11 @@ type Config struct {
 	zrpc.RpcServerConf
 	DataSource string
 	Cache      cache.CacheConf
+	JwtAuth    JwtAuth
+}
+
+type JwtAuth struct {
+	AccessSecret string
+	AccessExpire int64
+	Issuer       string
 }

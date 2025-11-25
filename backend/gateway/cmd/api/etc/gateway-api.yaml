@@ -2,13 +2,13 @@ Name: gateway-api
 Host: 0.0.0.0
 Port: 8888
 
-UserRpcConf:
+UserRpcClient:
   Etcd:
     Hosts:
     - 127.0.0.1:2379
     Key: user.rpc
 
-TaskRpcConf:
+TaskRpcClient:
   Etcd:
     Hosts:
     - 127.0.0.1:2379
@@ -17,3 +17,7 @@ TaskRpcConf:
 JwtAuth:
   AccessSecret: FYM&~Z(X
   AccessExpire: 31536000
+
+
+Log:
+  Encoding: plain

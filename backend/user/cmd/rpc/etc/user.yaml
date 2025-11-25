@@ -10,5 +10,10 @@ Cache:
   - Host: localhost:6379
 
 JwtAuth:
-  AccessSecret: FYM&~Z(X
+  AccessSecret: "FYM&~Z(X"
   AccessExpire: 31536000
+  Issuer: "zack"
+
+
+Log:
+  Encoding: plain

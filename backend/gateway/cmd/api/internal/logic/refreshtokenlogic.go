@@ -8,6 +8,7 @@ import (
 
 	"jike_todo/gateway/cmd/api/internal/svc"
 	"jike_todo/gateway/cmd/api/internal/types"
+	"jike_todo/user/cmd/rpc/user"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -28,7 +29,29 @@ func NewRefreshTokenLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Refr
 }
 
 func (l *RefreshTokenLogic) RefreshToken(req *types.RefreshTokenReq) (resp *types.AuthResp, err error) {
-	// todo: add your logic here and delete this line
+	// 调用用户RPC服务
+	rpcResp, err := l.svcCtx.UserRpc.RefreshToken(l.ctx, &user.RefreshTokenRequest{
+		RefreshToken: req.RefreshToken,
+	})
+	if err != nil {
+		l.Errorf("刷新令牌失败: %v", err)
+		return nil, err
+	}
 
-	return
+	// 手动复制响应数据
+	resp = &types.AuthResp{}
+	resp.User = types.UserInfo{
+		ID:        rpcResp.User.Id,
+		Username:  rpcResp.User.Username,
+		Email:     rpcResp.User.Email,
+		Nickname:  rpcResp.User.Nickname,
+		Avatar:    rpcResp.User.Avatar,
+		Status:    rpcResp.User.Status,
+		CreatedAt: rpcResp.User.CreatedAt,
+	}
+	resp.AccessToken = rpcResp.AccessToken
+	resp.RefreshToken = rpcResp.RefreshToken
+	resp.ExpiresAt = rpcResp.ExpiresAt
+
+	return resp, nil
 }

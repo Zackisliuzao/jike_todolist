@@ -1,0 +1,785 @@
+basePath: /
+consumes:
+- application/json
+info:
+  title: TODO List Gateway API
+  version: "1.0"
+paths:
+  /api/v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login with username and password
+      operationId: login
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            password:
+              type: string
+            username:
+              type: string
+          required:
+          - username
+          - password
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              access_token:
+                type: string
+              expires_at:
+                type: integer
+              refresh_token:
+                type: string
+              user:
+                properties:
+                  avatar:
+                    type: string
+                  created_at:
+                    type: string
+                  email:
+                    type: string
+                  id:
+                    type: integer
+                  last_login_at:
+                    type: string
+                  nickname:
+                    type: string
+                  status:
+                    type: integer
+                  username:
+                    type: string
+                required:
+                - id
+                - username
+                - email
+                - nickname
+                - avatar
+                - status
+                - last_login_at
+                - created_at
+                type: object
+            type: object
+      schemes:
+      - https
+      summary: User login
+  /api/v1/auth/logout:
+    post:
+      description: Logout user and invalidate token
+      operationId: logout
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              code:
+                type: integer
+              data: {}
+              message:
+                type: string
+            type: object
+      schemes:
+      - https
+      summary: Logout
+  /api/v1/auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Refresh access token using refresh token
+      operationId: refreshToken
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            refresh_token:
+              type: string
+          required:
+          - refresh_token
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              access_token:
+                type: string
+              expires_at:
+                type: integer
+              refresh_token:
+                type: string
+              user:
+                properties:
+                  avatar:
+                    type: string
+                  created_at:
+                    type: string
+                  email:
+                    type: string
+                  id:
+                    type: integer
+                  last_login_at:
+                    type: string
+                  nickname:
+                    type: string
+                  status:
+                    type: integer
+                  username:
+                    type: string
+                required:
+                - id
+                - username
+                - email
+                - nickname
+                - avatar
+                - status
+                - last_login_at
+                - created_at
+                type: object
+            type: object
+      schemes:
+      - https
+      summary: Refresh token
+  /api/v1/auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user account
+      operationId: register
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            email:
+              type: string
+            nickname:
+              type: string
+            password:
+              type: string
+            username:
+              type: string
+          required:
+          - username
+          - email
+          - password
+          - nickname
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              access_token:
+                type: string
+              expires_at:
+                type: integer
+              refresh_token:
+                type: string
+              user:
+                properties:
+                  avatar:
+                    type: string
+                  created_at:
+                    type: string
+                  email:
+                    type: string
+                  id:
+                    type: integer
+                  last_login_at:
+                    type: string
+                  nickname:
+                    type: string
+                  status:
+                    type: integer
+                  username:
+                    type: string
+                required:
+                - id
+                - username
+                - email
+                - nickname
+                - avatar
+                - status
+                - last_login_at
+                - created_at
+                type: object
+            type: object
+      schemes:
+      - https
+      summary: User registration
+  /api/v1/categories:
+    get:
+      description: Get user's category list
+      operationId: getCategories
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              code:
+                type: integer
+              data: {}
+              message:
+                type: string
+            type: object
+      schemes:
+      - https
+      summary: Get category list
+    post:
+      consumes:
+      - application/json
+      description: Create a new task category
+      operationId: createCategory
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            color:
+              default: '#1890ff'
+              example: '#1890ff'
+              type: string
+            name:
+              type: string
+          required:
+          - name
+          - color
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              code:
+                type: integer
+              data: {}
+              message:
+                type: string
+            type: object
+      schemes:
+      - https
+      summary: Create category
+  /api/v1/categories/{id}:
+    delete:
+      description: Delete a category
+      operationId: deleteCategory
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              code:
+                type: integer
+              data: {}
+              message:
+                type: string
+            type: object
+      schemes:
+      - https
+      summary: Delete category
+    put:
+      consumes:
+      - application/json
+      description: Update category information
+      operationId: updateCategory
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            color:
+              type: string
+            name:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              code:
+                type: integer
+              data: {}
+              message:
+                type: string
+            type: object
+      schemes:
+      - https
+      summary: Update category
+  /api/v1/stats/completion:
+    get:
+      description: Get detailed completion statistics
+      operationId: getStatsCompletion
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              code:
+                type: integer
+              data: {}
+              message:
+                type: string
+            type: object
+      schemes:
+      - https
+      summary: Get completion statistics
+  /api/v1/stats/overview:
+    get:
+      description: Get user's task overview statistics
+      operationId: getStatsOverview
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              code:
+                type: integer
+              data: {}
+              message:
+                type: string
+            type: object
+      schemes:
+      - https
+      summary: Get overview statistics
+  /api/v1/tasks:
+    get:
+      description: Get paginated task list with filters
+      operationId: getTasks
+      parameters:
+      - default: 1
+        in: query
+        name: page
+        required: true
+        type: integer
+      - default: 10
+        in: query
+        name: size
+        required: true
+        type: integer
+      - allowEmptyValue: true
+        in: query
+        name: category
+        type: string
+      - allowEmptyValue: true
+        in: query
+        name: status
+        type: integer
+      - default: created_at
+        in: query
+        name: sort_by
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              code:
+                type: integer
+              data: {}
+              message:
+                type: string
+            type: object
+      schemes:
+      - https
+      summary: Get task list
+    post:
+      consumes:
+      - application/json
+      description: Create a new task
+      operationId: createTask
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            category:
+              default: default
+              example: default
+              type: string
+            description:
+              type: string
+            due_date:
+              type: string
+            priority:
+              default: 1
+              example: 1
+              type: integer
+            title:
+              type: string
+          required:
+          - title
+          - description
+          - category
+          - priority
+          - due_date
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              code:
+                type: integer
+              data: {}
+              message:
+                type: string
+            type: object
+      schemes:
+      - https
+      summary: Create task
+  /api/v1/tasks/{id}:
+    delete:
+      description: Delete a task (soft delete)
+      operationId: deleteTask
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              code:
+                type: integer
+              data: {}
+              message:
+                type: string
+            type: object
+      schemes:
+      - https
+      summary: Delete task
+    get:
+      description: Get task detail by ID
+      operationId: getTask
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              code:
+                type: integer
+              data: {}
+              message:
+                type: string
+            type: object
+      schemes:
+      - https
+      summary: Get task detail
+    put:
+      consumes:
+      - application/json
+      description: Update task information
+      operationId: updateTask
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            category:
+              type: string
+            description:
+              type: string
+            due_date:
+              type: string
+            priority:
+              type: integer
+            title:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              code:
+                type: integer
+              data: {}
+              message:
+                type: string
+            type: object
+      schemes:
+      - https
+      summary: Update task
+  /api/v1/tasks/{id}/status:
+    patch:
+      consumes:
+      - application/json
+      description: Update task completion status
+      operationId: updateTaskStatus
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            status:
+              type: integer
+          required:
+          - status
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              code:
+                type: integer
+              data: {}
+              message:
+                type: string
+            type: object
+      schemes:
+      - https
+      summary: Update task status
+  /api/v1/tasks/batch:
+    delete:
+      consumes:
+      - application/json
+      description: Delete multiple tasks at once
+      operationId: batchDeleteTasks
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            task_ids:
+              items:
+                type: integer
+              type: array
+          required:
+          - task_ids
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              code:
+                type: integer
+              data: {}
+              message:
+                type: string
+            type: object
+      schemes:
+      - https
+      summary: Batch delete tasks
+  /api/v1/tasks/batch/status:
+    patch:
+      consumes:
+      - application/json
+      description: Update status for multiple tasks at once
+      operationId: batchUpdateTaskStatus
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            status:
+              type: integer
+            task_ids:
+              items:
+                type: integer
+              type: array
+          required:
+          - task_ids
+          - status
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              code:
+                type: integer
+              data: {}
+              message:
+                type: string
+            type: object
+      schemes:
+      - https
+      summary: Batch update task status
+  /api/v1/tasks/search:
+    get:
+      description: Search tasks by keyword
+      operationId: searchTasks
+      parameters:
+      - in: query
+        name: keyword
+        required: true
+        type: string
+      - default: 1
+        in: query
+        name: page
+        required: true
+        type: integer
+      - default: 10
+        in: query
+        name: size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              code:
+                type: integer
+              data: {}
+              message:
+                type: string
+            type: object
+      schemes:
+      - https
+      summary: Search tasks
+  /api/v1/user/password:
+    put:
+      consumes:
+      - application/json
+      description: Change user password
+      operationId: changePassword
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            new_password:
+              type: string
+            old_password:
+              type: string
+          required:
+          - old_password
+          - new_password
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              code:
+                type: integer
+              data: {}
+              message:
+                type: string
+            type: object
+      schemes:
+      - https
+      summary: Change password
+  /api/v1/user/profile:
+    get:
+      description: Get current user profile information
+      operationId: getProfile
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              code:
+                type: integer
+              data: {}
+              message:
+                type: string
+            type: object
+      schemes:
+      - https
+      summary: Get user profile
+    put:
+      consumes:
+      - application/json
+      description: Update current user profile
+      operationId: updateProfile
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            avatar:
+              type: string
+            nickname:
+              type: string
+          required:
+          - nickname
+          - avatar
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+          schema:
+            properties:
+              code:
+                type: integer
+              data: {}
+              message:
+                type: string
+            type: object
+      schemes:
+      - https
+      summary: Update user profile
+produces:
+- application/json
+schemes:
+- https
+swagger: "2.0"
+x-date: "2025-11-25 22:02:02"
+x-description: This is a goctl generated swagger file.
+x-github: https://github.com/zeromicro/go-zero
+x-go-zero-doc: https://go-zero.dev/
+x-goctl-version: 1.9.2

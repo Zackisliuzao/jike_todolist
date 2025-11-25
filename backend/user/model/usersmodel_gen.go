@@ -45,16 +45,15 @@ type (
 	}
 
 	Users struct {
-		Id           int64        `db:"id"`            // 主键ID
-		Username     string       `db:"username"`      // 用户名
-		Email        string       `db:"email"`         // 邮箱
-		PasswordHash string       `db:"password_hash"` // 密码哈希
-		Nickname     string       `db:"nickname"`      // 昵称
-		Avatar       string       `db:"avatar"`        // 头像URL
-		Status       int64        `db:"status"`        // 状态(0:禁用,1:正常)
-		LastLoginAt  sql.NullTime `db:"last_login_at"` // 最后登录时间
-		CreatedAt    time.Time    `db:"created_at"`    // 创建时间
-		UpdatedAt    time.Time    `db:"updated_at"`    // 更新时间
+		Id           int64     `db:"id"`            // 主键ID
+		Username     string    `db:"username"`      // 用户名
+		Email        string    `db:"email"`         // 邮箱
+		PasswordHash string    `db:"password_hash"` // 密码哈希
+		Nickname     string    `db:"nickname"`      // 昵称
+		Avatar       string    `db:"avatar"`        // 头像URL
+		Status       int64     `db:"status"`        // 状态(0:禁用,1:正常)
+		CreatedAt    time.Time `db:"created_at"`    // 创建时间
+		UpdatedAt    time.Time `db:"updated_at"`    // 更新时间
 	}
 )
 
@@ -143,8 +142,8 @@ func (m *defaultUsersModel) Insert(ctx context.Context, data *Users) (sql.Result
 	usersIdKey := fmt.Sprintf("%s%v", cacheUsersIdPrefix, data.Id)
 	usersUsernameKey := fmt.Sprintf("%s%v", cacheUsersUsernamePrefix, data.Username)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?)", m.table, usersRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.Username, data.Email, data.PasswordHash, data.Nickname, data.Avatar, data.Status, data.LastLoginAt)
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?)", m.table, usersRowsExpectAutoSet)
+		return conn.ExecCtx(ctx, query, data.Username, data.Email, data.PasswordHash, data.Nickname, data.Avatar, data.Status)
 	}, usersEmailKey, usersIdKey, usersUsernameKey)
 	return ret, err
 }
@@ -160,7 +159,7 @@ func (m *defaultUsersModel) Update(ctx context.Context, newData *Users) error {
 	usersUsernameKey := fmt.Sprintf("%s%v", cacheUsersUsernamePrefix, data.Username)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, usersRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, newData.Username, newData.Email, newData.PasswordHash, newData.Nickname, newData.Avatar, newData.Status, newData.LastLoginAt, newData.Id)
+		return conn.ExecCtx(ctx, query, newData.Username, newData.Email, newData.PasswordHash, newData.Nickname, newData.Avatar, newData.Status, newData.Id)
 	}, usersEmailKey, usersIdKey, usersUsernameKey)
 	return err
 }
