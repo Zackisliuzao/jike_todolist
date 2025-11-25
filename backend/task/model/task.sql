@@ -15,6 +15,5 @@ CREATE TABLE `tasks` (
   KEY `idx_status` (`status`),
   KEY `idx_category` (`category`),
   KEY `idx_due_date` (`due_date`),
-  KEY `idx_created_at` (`created_at`),
-  CONSTRAINT `fk_tasks_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  KEY `idx_created_at` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='待办事项表';

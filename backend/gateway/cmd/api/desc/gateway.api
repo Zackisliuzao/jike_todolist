@@ -1,12 +1,11 @@
 syntax = "v1"
 
 info (
-	title: "TODO List Gateway API"
-	desc: "Gateway API for TODO List application with JWT authentication"
+	title:  "TODO List Gateway API"
+	desc:   "Gateway API for TODO List application with JWT authentication"
 	author: "liuzao"
-	email: "lz790929231@163.com"
+	email:  "lz790929231@163.com"
 )
-
 
 type (
 	// Common response structure
@@ -15,7 +14,6 @@ type (
 		Message string      `json:"message"`
 		Data    interface{} `json:"data,omitempty"`
 	}
-
 	// Auth request/response types
 	RegisterReq {
 		Username string `json:"username" validate:"required,min=3,max=50"`
@@ -23,45 +21,38 @@ type (
 		Password string `json:"password" validate:"required,min=6"`
 		Nickname string `json:"nickname,omitempty" validate:"max=50"`
 	}
-
 	LoginReq {
 		Username string `json:"username" validate:"required"`
 		Password string `json:"password" validate:"required"`
 	}
-
 	RefreshTokenReq {
 		RefreshToken string `json:"refresh_token" validate:"required"`
 	}
-
 	AuthResp {
 		User         UserInfo `json:"user"`
 		AccessToken  string   `json:"access_token"`
 		RefreshToken string   `json:"refresh_token"`
 		ExpiresAt    int64    `json:"expires_at"`
 	}
-
 	UserInfo {
-		ID           int64  `json:"id"`
-		Username     string `json:"username"`
-		Email        string `json:"email"`
-		Nickname     string `json:"nickname"`
-		Avatar       string `json:"avatar"`
-		Status       int32  `json:"status"`
-		LastLoginAt  string `json:"last_login_at"`
-		CreatedAt    string `json:"created_at"`
+		ID          int64  `json:"id"`
+		Username    string `json:"username"`
+		Email       string `json:"email"`
+		Nickname    string `json:"nickname"`
+		Avatar      string `json:"avatar"`
+		Status      int32  `json:"status"`
+		LastLoginAt string `json:"last_login_at"`
+		CreatedAt   string `json:"created_at"`
 	}
-
 	// User management types
 	UpdateProfileReq {
 		Nickname string `json:"nickname,omitempty" validate:"max=50"`
 		Avatar   string `json:"avatar,omitempty"`
 	}
-
 	ChangePasswordReq {
 		OldPassword string `json:"old_password" validate:"required"`
 		NewPassword string `json:"new_password" validate:"required,min=6"`
 	}
-
 	// Task request/response types
 	CreateTaskReq {
 		Title       string `json:"title" validate:"required,max=255"`
@@ -70,7 +61,6 @@ type (
 		Priority    int32  `json:"priority,default=1,oneof=1 2 3"`
 		DueDate     string `json:"due_date,omitempty"`
 	}
-
 	TaskInfo {
 		ID          int64  `json:"id"`
 		UserID      int64  `json:"user_id"`
@@ -84,7 +74,6 @@ type (
 		UpdatedAt   string `json:"updated_at"`
 		CompletedAt string `json:"completed_at"`
 	}
-
 	UpdateTaskReq {
 		Title       string `json:"title,optional" validate:"max=255"`
 		Description string `json:"description,optional"`
@@ -92,11 +81,9 @@ type (
 		Priority    int32  `json:"priority,optional,oneof=1 2 3"`
 		DueDate     string `json:"due_date,optional"`
 	}
-
 	UpdateTaskStatusReq {
 		Status int32 `json:"status" validate:"oneof=0 1"`
 	}
-
 	GetTasksReq {
 		Page     int32  `form:"page,default=1"`
 		Size     int32  `form:"size,default=10"`
@@ -104,18 +91,15 @@ type (
 		Status   int32  `form:"status,optional,oneof=0 1 2"`
 		SortBy   string `form:"sort_by,default=created_at"`
 	}
-
 	GetTasksResp {
 		Tasks []TaskInfo `json:"tasks"`
 		Total int32      `json:"total"`
 	}
-
 	// Category types
 	CreateCategoryReq {
 		Name  string `json:"name" validate:"required,max=50"`
 		Color string `json:"color,default=#1890ff"`
 	}
-
 	CategoryInfo {
 		ID        int64  `json:"id"`
 		UserID    int64  `json:"user_id"`
@@ -124,57 +108,48 @@ type (
 		CreatedAt string `json:"created_at"`
 		UpdatedAt string `json:"updated_at"`
 	}
-
 	UpdateCategoryReq {
 		Name  string `json:"name,optional" validate:"max=50"`
 		Color string `json:"color,optional"`
 	}
-
 	// Stats types
 	StatsOverviewResp {
-		TotalTasks     int32 `json:"total_tasks"`
-		CompletedTasks int32 `json:"completed_tasks"`
-		PendingTasks   int32 `json:"pending_tasks"`
+		TotalTasks     int32   `json:"total_tasks"`
+		CompletedTasks int32   `json:"completed_tasks"`
+		PendingTasks   int32   `json:"pending_tasks"`
 		CompletionRate float64 `json:"completion_rate"`
 	}
-
 	StatsCompletionResp {
-		DailyCompletion   []DayCompletion `json:"daily_completion"`
-		CategoryStats     []CategoryStat  `json:"category_stats"`
-		PriorityStats     []PriorityStat  `json:"priority_stats"`
+		DailyCompletion []DayCompletion `json:"daily_completion"`
+		CategoryStats   []CategoryStat  `json:"category_stats"`
+		PriorityStats   []PriorityStat  `json:"priority_stats"`
 	}
-
 	DayCompletion {
 		Date      string `json:"date"`
 		Completed int32  `json:"completed"`
 		Total     int32  `json:"total"`
 	}
-
 	CategoryStat {
 		Category string  `json:"category"`
 		Count    int32   `json:"count"`
 		Rate     float64 `json:"rate"`
 	}
-
 	PriorityStat {
 		Priority int32   `json:"priority"`
 		Count    int32   `json:"count"`
 		Rate     float64 `json:"rate"`
 	}
-
 	// Search types
 	SearchTasksReq {
 		Keyword string `form:"keyword" validate:"required"`
 		Page    int32  `form:"page,default=1"`
 		Size    int32  `form:"size,default=10"`
 	}
-
 	// Batch operations types
 	BatchUpdateStatusReq {
 		TaskIDs []int64 `json:"task_ids" validate:"required,min=1"`
-		Status  int32  `json:"status" validate:"oneof=0 1"`
+		Status  int32   `json:"status" validate:"oneof=0 1"`
 	}
-
 	BatchDeleteReq {
 		TaskIDs []int64 `json:"task_ids" validate:"required,min=1"`
 	}
@@ -184,23 +159,23 @@ type (
 @server (
 	prefix: /api/v1
 )
-service gateway-api-auth {
+service gateway-api {
 	@doc (
-		summary: "User registration"
+		summary:     "User registration"
 		description: "Register a new user account"
 	)
 	@handler Register
 	post /auth/register (RegisterReq) returns (AuthResp)
 
 	@doc (
-		summary: "User login"
+		summary:     "User login"
 		description: "Login with username and password"
 	)
 	@handler Login
 	post /auth/login (LoginReq) returns (AuthResp)
 
 	@doc (
-		summary: "Refresh token"
+		summary:     "Refresh token"
 		description: "Refresh access token using refresh token"
 	)
 	@handler RefreshToken
@@ -209,34 +184,33 @@ service gateway-api-auth {
 
 @server (
 	prefix: /api/v1
-	jwt: JwtAuth
+	jwt:    JwtAuth
 )
 service gateway-api {
-
 	// User management endpoints (JWT required)
 	@doc (
-		summary: "Get user profile"
+		summary:     "Get user profile"
 		description: "Get current user profile information"
 	)
 	@handler GetProfile
 	get /user/profile returns (BaseResponse)
 
 	@doc (
-		summary: "Update user profile"
+		summary:     "Update user profile"
 		description: "Update current user profile"
 	)
 	@handler UpdateProfile
 	put /user/profile (UpdateProfileReq) returns (BaseResponse)
 
 	@doc (
-		summary: "Change password"
+		summary:     "Change password"
 		description: "Change user password"
 	)
 	@handler ChangePassword
 	put /user/password (ChangePasswordReq) returns (BaseResponse)
 
 	@doc (
-		summary: "Logout"
+		summary:     "Logout"
 		description: "Logout user and invalidate token"
 	)
 	@handler Logout
@@ -244,42 +218,42 @@ service gateway-api {
 
 	// Task management endpoints (JWT required)
 	@doc (
-		summary: "Create task"
+		summary:     "Create task"
 		description: "Create a new task"
 	)
 	@handler CreateTask
 	post /tasks (CreateTaskReq) returns (BaseResponse)
 
 	@doc (
-		summary: "Get task list"
+		summary:     "Get task list"
 		description: "Get paginated task list with filters"
 	)
 	@handler GetTasks
 	get /tasks (GetTasksReq) returns (BaseResponse)
 
 	@doc (
-		summary: "Get task detail"
+		summary:     "Get task detail"
 		description: "Get task detail by ID"
 	)
 	@handler GetTask
 	get /tasks/:id returns (BaseResponse)
 
 	@doc (
-		summary: "Update task"
+		summary:     "Update task"
 		description: "Update task information"
 	)
 	@handler UpdateTask
 	put /tasks/:id (UpdateTaskReq) returns (BaseResponse)
 
 	@doc (
-		summary: "Delete task"
+		summary:     "Delete task"
 		description: "Delete a task (soft delete)"
 	)
 	@handler DeleteTask
 	delete /tasks/:id returns (BaseResponse)
 
 	@doc (
-		summary: "Update task status"
+		summary:     "Update task status"
 		description: "Update task completion status"
 	)
 	@handler UpdateTaskStatus
@@ -287,28 +261,28 @@ service gateway-api {
 
 	// Category management endpoints (JWT required)
 	@doc (
-		summary: "Create category"
+		summary:     "Create category"
 		description: "Create a new task category"
 	)
 	@handler CreateCategory
 	post /categories (CreateCategoryReq) returns (BaseResponse)
 
 	@doc (
-		summary: "Get category list"
+		summary:     "Get category list"
 		description: "Get user's category list"
 	)
 	@handler GetCategories
 	get /categories returns (BaseResponse)
 
 	@doc (
-		summary: "Update category"
+		summary:     "Update category"
 		description: "Update category information"
 	)
 	@handler UpdateCategory
 	put /categories/:id (UpdateCategoryReq) returns (BaseResponse)
 
 	@doc (
-		summary: "Delete category"
+		summary:     "Delete category"
 		description: "Delete a category"
 	)
 	@handler DeleteCategory
@@ -316,14 +290,14 @@ service gateway-api {
 
 	// Stats endpoints (JWT required)
 	@doc (
-		summary: "Get overview statistics"
+		summary:     "Get overview statistics"
 		description: "Get user's task overview statistics"
 	)
 	@handler GetStatsOverview
 	get /stats/overview returns (BaseResponse)
 
 	@doc (
-		summary: "Get completion statistics"
+		summary:     "Get completion statistics"
 		description: "Get detailed completion statistics"
 	)
 	@handler GetStatsCompletion
@@ -331,7 +305,7 @@ service gateway-api {
 
 	// Search endpoints (JWT required)
 	@doc (
-		summary: "Search tasks"
+		summary:     "Search tasks"
 		description: "Search tasks by keyword"
 	)
 	@handler SearchTasks
@@ -339,16 +313,17 @@ service gateway-api {
 
 	// Batch operations endpoints (JWT required)
 	@doc (
-		summary: "Batch update task status"
+		summary:     "Batch update task status"
 		description: "Update status for multiple tasks at once"
 	)
 	@handler BatchUpdateTaskStatus
 	patch /tasks/batch/status (BatchUpdateStatusReq) returns (BaseResponse)
 
 	@doc (
-		summary: "Batch delete tasks"
+		summary:     "Batch delete tasks"
 		description: "Delete multiple tasks at once"
 	)
 	@handler BatchDeleteTasks
 	delete /tasks/batch (BatchDeleteReq) returns (BaseResponse)
 }
+
