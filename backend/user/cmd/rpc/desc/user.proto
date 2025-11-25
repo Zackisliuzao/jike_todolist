@@ -39,15 +39,11 @@ message RefreshTokenRequest {
 }
 
 message LogoutRequest {
-  string access_token = 1;
+  int64 user_id = 1;
 }
 
 message LogoutResponse {
   bool success = 1;
-}
-
-message ValidateTokenRequest {
-  string access_token = 1;
 }
 
 message GetUserRequest {
@@ -71,7 +67,6 @@ service AuthService {
   rpc Login(LoginRequest) returns (AuthResponse);
   rpc RefreshToken(RefreshTokenRequest) returns (AuthResponse);
   rpc Logout(LogoutRequest) returns (LogoutResponse);
-  rpc ValidateToken(ValidateTokenRequest) returns (User);
   rpc GetUser(GetUserRequest) returns (User);
   rpc UpdateUser(UpdateUserRequest) returns (User);
   rpc ChangePassword(ChangePasswordRequest) returns (User);

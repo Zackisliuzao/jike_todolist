@@ -43,11 +43,6 @@ func (s *AuthServiceServer) Logout(ctx context.Context, in *user.LogoutRequest) 
 	return l.Logout(in)
 }
 
-func (s *AuthServiceServer) ValidateToken(ctx context.Context, in *user.ValidateTokenRequest) (*user.User, error) {
-	l := logic.NewValidateTokenLogic(ctx, s.svcCtx)
-	return l.ValidateToken(in)
-}
-
 func (s *AuthServiceServer) GetUser(ctx context.Context, in *user.GetUserRequest) (*user.User, error) {
 	l := logic.NewGetUserLogic(ctx, s.svcCtx)
 	return l.GetUser(in)

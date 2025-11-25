@@ -24,14 +24,12 @@ type (
 	RegisterRequest       = user.RegisterRequest
 	UpdateUserRequest     = user.UpdateUserRequest
 	User                  = user.User
-	ValidateTokenRequest  = user.ValidateTokenRequest
 
 	AuthService interface {
 		Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*AuthResponse, error)
 		Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*AuthResponse, error)
 		RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*AuthResponse, error)
 		Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutResponse, error)
-		ValidateToken(ctx context.Context, in *ValidateTokenRequest, opts ...grpc.CallOption) (*User, error)
 		GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*User, error)
 		UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*User, error)
 		ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*User, error)
@@ -66,11 +64,6 @@ func (m *defaultAuthService) RefreshToken(ctx context.Context, in *RefreshTokenR
 func (m *defaultAuthService) Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutResponse, error) {
 	client := user.NewAuthServiceClient(m.cli.Conn())
 	return client.Logout(ctx, in, opts...)
-}
-
-func (m *defaultAuthService) ValidateToken(ctx context.Context, in *ValidateTokenRequest, opts ...grpc.CallOption) (*User, error) {
-	client := user.NewAuthServiceClient(m.cli.Conn())
-	return client.ValidateToken(ctx, in, opts...)
 }
 
 func (m *defaultAuthService) GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*User, error) {

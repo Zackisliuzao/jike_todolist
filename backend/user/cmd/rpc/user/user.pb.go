@@ -355,7 +355,7 @@ func (x *RefreshTokenRequest) GetRefreshToken() string {
 
 type LogoutRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	AccessToken   string                 `protobuf:"bytes,1,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
+	UserId        int64                  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -390,11 +390,11 @@ func (*LogoutRequest) Descriptor() ([]byte, []int) {
 	return file_rpc_desc_user_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *LogoutRequest) GetAccessToken() string {
+func (x *LogoutRequest) GetUserId() int64 {
 	if x != nil {
-		return x.AccessToken
+		return x.UserId
 	}
-	return ""
+	return 0
 }
 
 type LogoutResponse struct {
@@ -441,50 +441,6 @@ func (x *LogoutResponse) GetSuccess() bool {
 	return false
 }
 
-type ValidateTokenRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	AccessToken   string                 `protobuf:"bytes,1,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ValidateTokenRequest) Reset() {
-	*x = ValidateTokenRequest{}
-	mi := &file_rpc_desc_user_proto_msgTypes[7]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ValidateTokenRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ValidateTokenRequest) ProtoMessage() {}
-
-func (x *ValidateTokenRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rpc_desc_user_proto_msgTypes[7]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ValidateTokenRequest.ProtoReflect.Descriptor instead.
-func (*ValidateTokenRequest) Descriptor() ([]byte, []int) {
-	return file_rpc_desc_user_proto_rawDescGZIP(), []int{7}
-}
-
-func (x *ValidateTokenRequest) GetAccessToken() string {
-	if x != nil {
-		return x.AccessToken
-	}
-	return ""
-}
-
 type GetUserRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        int64                  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
@@ -494,7 +450,7 @@ type GetUserRequest struct {
 
 func (x *GetUserRequest) Reset() {
 	*x = GetUserRequest{}
-	mi := &file_rpc_desc_user_proto_msgTypes[8]
+	mi := &file_rpc_desc_user_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -506,7 +462,7 @@ func (x *GetUserRequest) String() string {
 func (*GetUserRequest) ProtoMessage() {}
 
 func (x *GetUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rpc_desc_user_proto_msgTypes[8]
+	mi := &file_rpc_desc_user_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -519,7 +475,7 @@ func (x *GetUserRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetUserRequest.ProtoReflect.Descriptor instead.
 func (*GetUserRequest) Descriptor() ([]byte, []int) {
-	return file_rpc_desc_user_proto_rawDescGZIP(), []int{8}
+	return file_rpc_desc_user_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *GetUserRequest) GetUserId() int64 {
@@ -540,7 +496,7 @@ type UpdateUserRequest struct {
 
 func (x *UpdateUserRequest) Reset() {
 	*x = UpdateUserRequest{}
-	mi := &file_rpc_desc_user_proto_msgTypes[9]
+	mi := &file_rpc_desc_user_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -552,7 +508,7 @@ func (x *UpdateUserRequest) String() string {
 func (*UpdateUserRequest) ProtoMessage() {}
 
 func (x *UpdateUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rpc_desc_user_proto_msgTypes[9]
+	mi := &file_rpc_desc_user_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -565,7 +521,7 @@ func (x *UpdateUserRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateUserRequest.ProtoReflect.Descriptor instead.
 func (*UpdateUserRequest) Descriptor() ([]byte, []int) {
-	return file_rpc_desc_user_proto_rawDescGZIP(), []int{9}
+	return file_rpc_desc_user_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *UpdateUserRequest) GetUserId() int64 {
@@ -600,7 +556,7 @@ type ChangePasswordRequest struct {
 
 func (x *ChangePasswordRequest) Reset() {
 	*x = ChangePasswordRequest{}
-	mi := &file_rpc_desc_user_proto_msgTypes[10]
+	mi := &file_rpc_desc_user_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -612,7 +568,7 @@ func (x *ChangePasswordRequest) String() string {
 func (*ChangePasswordRequest) ProtoMessage() {}
 
 func (x *ChangePasswordRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_rpc_desc_user_proto_msgTypes[10]
+	mi := &file_rpc_desc_user_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -625,7 +581,7 @@ func (x *ChangePasswordRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChangePasswordRequest.ProtoReflect.Descriptor instead.
 func (*ChangePasswordRequest) Descriptor() ([]byte, []int) {
-	return file_rpc_desc_user_proto_rawDescGZIP(), []int{10}
+	return file_rpc_desc_user_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *ChangePasswordRequest) GetUserId() int64 {
@@ -680,13 +636,11 @@ const file_rpc_desc_user_proto_rawDesc = "" +
 	"\n" +
 	"expires_at\x18\x04 \x01(\x03R\texpiresAt\":\n" +
 	"\x13RefreshTokenRequest\x12#\n" +
-	"\rrefresh_token\x18\x01 \x01(\tR\frefreshToken\"2\n" +
-	"\rLogoutRequest\x12!\n" +
-	"\faccess_token\x18\x01 \x01(\tR\vaccessToken\"*\n" +
+	"\rrefresh_token\x18\x01 \x01(\tR\frefreshToken\"(\n" +
+	"\rLogoutRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\x03R\x06userId\"*\n" +
 	"\x0eLogoutResponse\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess\"9\n" +
-	"\x14ValidateTokenRequest\x12!\n" +
-	"\faccess_token\x18\x01 \x01(\tR\vaccessToken\")\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\")\n" +
 	"\x0eGetUserRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\x03R\x06userId\"`\n" +
 	"\x11UpdateUserRequest\x12\x17\n" +
@@ -696,14 +650,12 @@ const file_rpc_desc_user_proto_rawDesc = "" +
 	"\x15ChangePasswordRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\x03R\x06userId\x12!\n" +
 	"\fold_password\x18\x02 \x01(\tR\voldPassword\x12!\n" +
-	"\fnew_password\x18\x03 \x01(\tR\vnewPassword2\xbd\x03\n" +
+	"\fnew_password\x18\x03 \x01(\tR\vnewPassword2\x84\x03\n" +
 	"\vAuthService\x125\n" +
 	"\bRegister\x12\x15.user.RegisterRequest\x1a\x12.user.AuthResponse\x12/\n" +
 	"\x05Login\x12\x12.user.LoginRequest\x1a\x12.user.AuthResponse\x12=\n" +
 	"\fRefreshToken\x12\x19.user.RefreshTokenRequest\x1a\x12.user.AuthResponse\x123\n" +
-	"\x06Logout\x12\x13.user.LogoutRequest\x1a\x14.user.LogoutResponse\x127\n" +
-	"\rValidateToken\x12\x1a.user.ValidateTokenRequest\x1a\n" +
-	".user.User\x12+\n" +
+	"\x06Logout\x12\x13.user.LogoutRequest\x1a\x14.user.LogoutResponse\x12+\n" +
 	"\aGetUser\x12\x14.user.GetUserRequest\x1a\n" +
 	".user.User\x121\n" +
 	"\n" +
@@ -724,7 +676,7 @@ func file_rpc_desc_user_proto_rawDescGZIP() []byte {
 	return file_rpc_desc_user_proto_rawDescData
 }
 
-var file_rpc_desc_user_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_rpc_desc_user_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_rpc_desc_user_proto_goTypes = []any{
 	(*User)(nil),                  // 0: user.User
 	(*RegisterRequest)(nil),       // 1: user.RegisterRequest
@@ -733,34 +685,31 @@ var file_rpc_desc_user_proto_goTypes = []any{
 	(*RefreshTokenRequest)(nil),   // 4: user.RefreshTokenRequest
 	(*LogoutRequest)(nil),         // 5: user.LogoutRequest
 	(*LogoutResponse)(nil),        // 6: user.LogoutResponse
-	(*ValidateTokenRequest)(nil),  // 7: user.ValidateTokenRequest
-	(*GetUserRequest)(nil),        // 8: user.GetUserRequest
-	(*UpdateUserRequest)(nil),     // 9: user.UpdateUserRequest
-	(*ChangePasswordRequest)(nil), // 10: user.ChangePasswordRequest
+	(*GetUserRequest)(nil),        // 7: user.GetUserRequest
+	(*UpdateUserRequest)(nil),     // 8: user.UpdateUserRequest
+	(*ChangePasswordRequest)(nil), // 9: user.ChangePasswordRequest
 }
 var file_rpc_desc_user_proto_depIdxs = []int32{
-	0,  // 0: user.AuthResponse.user:type_name -> user.User
-	1,  // 1: user.AuthService.Register:input_type -> user.RegisterRequest
-	2,  // 2: user.AuthService.Login:input_type -> user.LoginRequest
-	4,  // 3: user.AuthService.RefreshToken:input_type -> user.RefreshTokenRequest
-	5,  // 4: user.AuthService.Logout:input_type -> user.LogoutRequest
-	7,  // 5: user.AuthService.ValidateToken:input_type -> user.ValidateTokenRequest
-	8,  // 6: user.AuthService.GetUser:input_type -> user.GetUserRequest
-	9,  // 7: user.AuthService.UpdateUser:input_type -> user.UpdateUserRequest
-	10, // 8: user.AuthService.ChangePassword:input_type -> user.ChangePasswordRequest
-	3,  // 9: user.AuthService.Register:output_type -> user.AuthResponse
-	3,  // 10: user.AuthService.Login:output_type -> user.AuthResponse
-	3,  // 11: user.AuthService.RefreshToken:output_type -> user.AuthResponse
-	6,  // 12: user.AuthService.Logout:output_type -> user.LogoutResponse
-	0,  // 13: user.AuthService.ValidateToken:output_type -> user.User
-	0,  // 14: user.AuthService.GetUser:output_type -> user.User
-	0,  // 15: user.AuthService.UpdateUser:output_type -> user.User
-	0,  // 16: user.AuthService.ChangePassword:output_type -> user.User
-	9,  // [9:17] is the sub-list for method output_type
-	1,  // [1:9] is the sub-list for method input_type
-	1,  // [1:1] is the sub-list for extension type_name
-	1,  // [1:1] is the sub-list for extension extendee
-	0,  // [0:1] is the sub-list for field type_name
+	0, // 0: user.AuthResponse.user:type_name -> user.User
+	1, // 1: user.AuthService.Register:input_type -> user.RegisterRequest
+	2, // 2: user.AuthService.Login:input_type -> user.LoginRequest
+	4, // 3: user.AuthService.RefreshToken:input_type -> user.RefreshTokenRequest
+	5, // 4: user.AuthService.Logout:input_type -> user.LogoutRequest
+	7, // 5: user.AuthService.GetUser:input_type -> user.GetUserRequest
+	8, // 6: user.AuthService.UpdateUser:input_type -> user.UpdateUserRequest
+	9, // 7: user.AuthService.ChangePassword:input_type -> user.ChangePasswordRequest
+	3, // 8: user.AuthService.Register:output_type -> user.AuthResponse
+	3, // 9: user.AuthService.Login:output_type -> user.AuthResponse
+	3, // 10: user.AuthService.RefreshToken:output_type -> user.AuthResponse
+	6, // 11: user.AuthService.Logout:output_type -> user.LogoutResponse
+	0, // 12: user.AuthService.GetUser:output_type -> user.User
+	0, // 13: user.AuthService.UpdateUser:output_type -> user.User
+	0, // 14: user.AuthService.ChangePassword:output_type -> user.User
+	8, // [8:15] is the sub-list for method output_type
+	1, // [1:8] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_rpc_desc_user_proto_init() }
@@ -774,7 +723,7 @@ func file_rpc_desc_user_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_rpc_desc_user_proto_rawDesc), len(file_rpc_desc_user_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   11,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
