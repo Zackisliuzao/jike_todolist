@@ -6,10 +6,11 @@ package handler
 import (
 	"net/http"
 
-	"github.com/zeromicro/go-zero/rest/httpx"
 	"jike_todo/gateway/cmd/api/internal/logic"
 	"jike_todo/gateway/cmd/api/internal/svc"
 	"jike_todo/gateway/cmd/api/internal/types"
+
+	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
 // Update task status
@@ -21,8 +22,20 @@ func UpdateTaskStatusHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
+		// 从URL路径参数中获取任务ID
+		idStr := r.URL.Query().Get("id")
+		if idStr == "" {
+			// 尝试从路径中解析
+			pathVars := r.Context().Value("path_params")
+			if pathVars != nil {
+				if params, ok := pathVars.(map[string]string); ok {
+					idStr = params["id"]
+				}
+			}
+		}
+
 		l := logic.NewUpdateTaskStatusLogic(r.Context(), svcCtx)
-		resp, err := l.UpdateTaskStatus(&req)
+		resp, err := l.UpdateTaskStatus(&req, idStr)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {

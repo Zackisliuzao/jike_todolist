@@ -14,8 +14,17 @@ import (
 // Get task detail
 func GetTaskHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// 从URL路径参数中获取任务ID
+		taskIdStr := ""
+		pathVars := r.Context().Value("path_params")
+		if pathVars != nil {
+			if params, ok := pathVars.(map[string]string); ok {
+				taskIdStr = params["id"]
+			}
+		}
+
 		l := logic.NewGetTaskLogic(r.Context(), svcCtx)
-		resp, err := l.GetTask()
+		resp, err := l.GetTask(taskIdStr)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {

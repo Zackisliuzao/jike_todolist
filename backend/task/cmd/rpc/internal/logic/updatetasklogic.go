@@ -2,9 +2,14 @@ package logic
 
 import (
 	"context"
+	"database/sql"
+	"fmt"
+	"time"
 
+	"jike_todo/common/tool"
 	"jike_todo/task/cmd/rpc/internal/svc"
 	"jike_todo/task/cmd/rpc/task"
+	"jike_todo/task/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -24,7 +29,61 @@ func NewUpdateTaskLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Update
 }
 
 func (l *UpdateTaskLogic) UpdateTask(in *task.UpdateTaskRequest) (*task.Task, error) {
-	// todo: add your logic here and delete this line
+	// 查询任务
+	taskRecord, err := l.svcCtx.TaskModel.FindOne(l.ctx, in.TaskId)
+	if err != nil {
+		if err == model.ErrNotFound {
+			return nil, fmt.Errorf("任务不存在")
+		}
+		l.Errorf("查询任务失败: %v", err)
+		return nil, fmt.Errorf("更新任务失败")
+	}
 
-	return &task.Task{}, nil
+	// 验证任务所有权
+	if taskRecord.UserId != in.UserId {
+		return nil, fmt.Errorf("无权限更新此任务")
+	}
+
+	// 更新任务信息
+	if in.Title != "" {
+		taskRecord.Title = in.Title
+	}
+	if in.Description != "" {
+		taskRecord.Description = sql.NullString{String: in.Description, Valid: true}
+	}
+	if in.Category != "" {
+		taskRecord.Category = in.Category
+	}
+	if in.Priority != 0 {
+		taskRecord.Priority = int64(in.Priority)
+	}
+	if in.DueDate != "" {
+		dueDate, err := tool.ParseNullableDate(in.DueDate)
+		if err != nil {
+			l.Errorf("无效的截止日期格式: %s, error: %v", in.DueDate, err)
+			return nil, fmt.Errorf("截止日期格式无效，请使用 YYYY-MM-DD 格式")
+		}
+		taskRecord.DueDate = dueDate
+	}
+
+	err = l.svcCtx.TaskModel.Update(l.ctx, taskRecord)
+	if err != nil {
+		l.Errorf("更新任务失败: %v", err)
+		return nil, fmt.Errorf("更新任务失败")
+	}
+
+	// 构建响应
+	return &task.Task{
+		Id:          taskRecord.Id,
+		UserId:      taskRecord.UserId,
+		Title:       taskRecord.Title,
+		Description: taskRecord.Description.String,
+		Category:    taskRecord.Category,
+		Priority:    int32(taskRecord.Priority),
+		Status:      int32(taskRecord.Status),
+		DueDate:     tool.FormatNullableDate(taskRecord.DueDate),
+		CreatedAt:   taskRecord.CreatedAt.Format(time.RFC3339),
+		UpdatedAt:   taskRecord.UpdatedAt.Format(time.RFC3339),
+		CompletedAt: tool.FormatNullableTime(taskRecord.CompletedAt),
+	}, nil
 }

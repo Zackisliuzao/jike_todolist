@@ -21,8 +21,17 @@ func UpdateTaskHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
+		// 从URL路径参数中获取任务ID
+		taskIdStr := ""
+		pathVars := r.Context().Value("path_params")
+		if pathVars != nil {
+			if params, ok := pathVars.(map[string]string); ok {
+				taskIdStr = params["id"]
+			}
+		}
+
 		l := logic.NewUpdateTaskLogic(r.Context(), svcCtx)
-		resp, err := l.UpdateTask(&req)
+		resp, err := l.UpdateTask(&req, taskIdStr)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {
