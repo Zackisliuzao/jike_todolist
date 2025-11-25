@@ -1,3 +1,15 @@
 Name: gateway-api
 Host: 0.0.0.0
 Port: 8888
+
+UserRpcConf:
+  Etcd:
+    Hosts:
+    - 127.0.0.1:2379
+    Key: user.rpc
+
+TaskRpcConf:
+  Etcd:
+    Hosts:
+    - 127.0.0.1:2379
+    Key: task.rpc
