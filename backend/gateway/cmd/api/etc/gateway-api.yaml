@@ -13,3 +13,7 @@ TaskRpcConf:
     Hosts:
     - 127.0.0.1:2379
     Key: task.rpc
+
+JwtAuth:
+  AccessSecret: FYM&~Z(X
+  AccessExpire: 31536000
