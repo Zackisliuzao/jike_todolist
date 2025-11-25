@@ -6,6 +6,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"net/http"
 
 	"jike_todo/gateway/cmd/api/internal/config"
 	"jike_todo/gateway/cmd/api/internal/handler"
@@ -23,7 +24,11 @@ func main() {
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 
-	server := rest.MustNewServer(c.RestConf)
+	server := rest.MustNewServer(c.RestConf, rest.WithUnauthorizedCallback(func(w http.ResponseWriter, r *http.Request, err error) {
+		// 自定义处理返回
+		w.WriteHeader(http.StatusUnauthorized)
+		fmt.Fprintf(w, "Unauthorized: %s", err.Error())
+	}))
 	defer server.Stop()
 
 	ctx := svc.NewServiceContext(c)
