@@ -1,0 +1,20 @@
+CREATE TABLE `tasks` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `user_id` bigint NOT NULL COMMENT '用户ID',
+  `title` varchar(255) NOT NULL COMMENT '任务标题',
+  `description` text COMMENT '任务描述',
+  `category` varchar(50) DEFAULT 'default' COMMENT '任务分类',
+  `priority` tinyint DEFAULT 1 COMMENT '优先级(1:低,2:中,3:高)',
+  `status` tinyint DEFAULT 0 COMMENT '状态(0:未完成,1:已完成,2:已删除)',
+  `due_date` datetime NULL COMMENT '截止日期',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `completed_at` datetime NULL COMMENT '完成时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_status` (`status`),
+  KEY `idx_category` (`category`),
+  KEY `idx_due_date` (`due_date`),
+  KEY `idx_created_at` (`created_at`),
+  CONSTRAINT `fk_tasks_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='待办事项表';

@@ -1,0 +1,212 @@
+syntax = "proto3";
+
+package task;
+
+option go_package = "./task";
+
+message Task {
+  int64 id = 1;
+  int64 user_id = 2;
+  string title = 3;
+  string description = 4;
+  string category = 5;
+  int32 priority = 6;
+  int32 status = 7;
+  string due_date = 8;
+  string created_at = 9;
+  string updated_at = 10;
+  string completed_at = 11;
+}
+
+message CreateTaskRequest {
+  int64 user_id = 1;
+  string title = 2;
+  string description = 3;
+  string category = 4;
+  int32 priority = 5;
+  string due_date = 6;
+}
+
+message GetTasksRequest {
+  int64 user_id = 1;
+  int32 page = 2;
+  int32 size = 3;
+  string category = 4;
+  int32 status = 5;
+  string sort_by = 6;
+}
+
+message GetTasksResponse {
+  repeated Task tasks = 1;
+  int32 total = 2;
+}
+
+message GetTaskRequest {
+  int64 task_id = 1;
+  int64 user_id = 2;
+}
+
+message UpdateTaskRequest {
+  int64 task_id = 1;
+  int64 user_id = 2;
+  string title = 3;
+  string description = 4;
+  string category = 5;
+  int32 priority = 6;
+  string due_date = 7;
+}
+
+message DeleteTaskRequest {
+  int64 task_id = 1;
+  int64 user_id = 2;
+}
+
+message DeleteTaskResponse {
+  bool success = 1;
+}
+
+message UpdateTaskStatusRequest {
+  int64 task_id = 1;
+  int64 user_id = 2;
+  int32 status = 3;
+}
+
+// Search related messages
+message SearchTasksRequest {
+  int64 user_id = 1;
+  string keyword = 2;
+  int32 page = 3;
+  int32 size = 4;
+  string category = 5;
+  int32 status = 6;
+}
+
+message SearchTasksResponse {
+  repeated Task tasks = 1;
+  int32 total = 2;
+}
+
+// Category related messages
+message Category {
+  int64 id = 1;
+  int64 user_id = 2;
+  string name = 3;
+  string color = 4;
+  string created_at = 5;
+  string updated_at = 6;
+}
+
+message CreateCategoryRequest {
+  int64 user_id = 1;
+  string name = 2;
+  string color = 3;
+}
+
+message GetCategoriesRequest {
+  int64 user_id = 1;
+}
+
+message GetCategoriesResponse {
+  repeated Category categories = 1;
+}
+
+message UpdateCategoryRequest {
+  int64 id = 1;
+  int64 user_id = 2;
+  string name = 3;
+  string color = 4;
+}
+
+message DeleteCategoryRequest {
+  int64 id = 1;
+  int64 user_id = 2;
+}
+
+message DeleteCategoryResponse {
+  bool success = 1;
+}
+
+// Stats related messages
+message GetStatsRequest {
+  int64 user_id = 1;
+}
+
+message GetStatsOverviewResponse {
+  int32 total_tasks = 1;
+  int32 completed_tasks = 2;
+  int32 pending_tasks = 3;
+  float completion_rate = 4;
+}
+
+message GetStatsCompletionResponse {
+  repeated DailyCompletion daily_completion = 1;
+  repeated CategoryStat category_stats = 2;
+  repeated PriorityStat priority_stats = 3;
+}
+
+message DailyCompletion {
+  string date = 1;
+  int32 completed = 2;
+  int32 total = 3;
+}
+
+message CategoryStat {
+  string category = 1;
+  int32 count = 2;
+  float rate = 3;
+}
+
+message PriorityStat {
+  int32 priority = 1;
+  int32 count = 2;
+  float rate = 3;
+}
+
+// Batch operations
+message BatchUpdateStatusRequest {
+  int64 user_id = 1;
+  repeated int64 task_ids = 2;
+  int32 status = 3;
+}
+
+message BatchUpdateStatusResponse {
+  bool success = 1;
+  int32 updated_count = 2;
+}
+
+message BatchDeleteRequest {
+  int64 user_id = 1;
+  repeated int64 task_ids = 2;
+}
+
+message BatchDeleteResponse {
+  bool success = 1;
+  int32 deleted_count = 2;
+}
+
+service TaskService {
+  // Task CRUD operations
+  rpc CreateTask(CreateTaskRequest) returns (Task);
+  rpc GetTask(GetTaskRequest) returns (Task);
+  rpc GetTasks(GetTasksRequest) returns (GetTasksResponse);
+  rpc UpdateTask(UpdateTaskRequest) returns (Task);
+  rpc DeleteTask(DeleteTaskRequest) returns (DeleteTaskResponse);
+  rpc UpdateTaskStatus(UpdateTaskStatusRequest) returns (Task);
+
+  // Search functionality
+  rpc SearchTasks(SearchTasksRequest) returns (SearchTasksResponse);
+
+  // Category operations
+  rpc CreateCategory(CreateCategoryRequest) returns (Category);
+  rpc GetCategories(GetCategoriesRequest) returns (GetCategoriesResponse);
+  rpc UpdateCategory(UpdateCategoryRequest) returns (Category);
+  rpc DeleteCategory(DeleteCategoryRequest) returns (DeleteCategoryResponse);
+
+  // Statistics operations
+  rpc GetStatsOverview(GetStatsRequest) returns (GetStatsOverviewResponse);
+  rpc GetStatsCompletion(GetStatsRequest) returns (GetStatsCompletionResponse);
+
+  // Batch operations
+  rpc BatchUpdateStatus(BatchUpdateStatusRequest) returns (BatchUpdateStatusResponse);
+  rpc BatchDelete(BatchDeleteRequest) returns (BatchDeleteResponse);
+}
