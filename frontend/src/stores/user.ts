@@ -58,11 +58,12 @@ export const useUserStore = defineStore('user', () => {
   }
 
   // 登出
-  const logout = async () => {
+  const logout = async (showMessage: boolean = true) => {
     try {
       await authApi.logout()
     } catch (error) {
-      console.error('Logout error:', error)
+      // 即使API调用失败，也要清除本地状态
+      console.log('Logout API call failed, but clearing local state:', error)
     } finally {
       // 清除状态
       token.value = ''
@@ -74,7 +75,10 @@ export const useUserStore = defineStore('user', () => {
       localStorage.removeItem('refreshToken')
       localStorage.removeItem('userInfo')
 
-      ElMessage.success('已退出登录')
+      // 只在需要时显示消息
+      if (showMessage) {
+        ElMessage.success('已退出登录')
+      }
     }
   }
 

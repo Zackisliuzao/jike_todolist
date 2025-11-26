@@ -37,7 +37,7 @@ export const authApi = {
 
   // 修改密码
   changePassword: (data: ChangePasswordRequest): Promise<ApiResponse> => {
-    return request.post('/auth/change-password', data)
+    return request.put('/user/password', data)
   },
 
   // 更新用户信息

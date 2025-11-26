@@ -15,14 +15,14 @@
           <template #header>
             <div class="card-header">
               <span>基本信息</span>
-              <el-button
+              <!-- <el-button
                 type="primary"
                 size="small"
                 :icon="Edit"
                 @click="showEditDialog = true"
               >
                 编辑资料
-              </el-button>
+              </el-button> -->
             </div>
           </template>
 
@@ -86,7 +86,7 @@
 
             <el-form-item label="确认密码" prop="confirm_password">
               <el-input
-                v-model="confirmPassword"
+                v-model="passwordForm.confirm_password"
                 type="password"
                 placeholder="请再次输入新密码"
                 show-password
@@ -169,12 +169,15 @@ import {
   Collection
 } from '@element-plus/icons-vue'
 import dayjs from 'dayjs'
+import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { useTaskStore } from '@/stores/task'
 import { authApi } from '@/api/auth'
 import type { ChangePasswordRequest } from '@/api/types'
 import EditProfileDialog from '@/components/user/EditProfileDialog.vue'
+import { ElMessage } from 'element-plus'
 
+const router = useRouter()
 const userStore = useUserStore()
 const taskStore = useTaskStore()
 
@@ -184,17 +187,18 @@ const passwordFormRef = ref<FormInstance>()
 // 响应式数据
 const showEditDialog = ref(false)
 const passwordLoading = ref(false)
-const confirmPassword = ref('')
+// confirmPassword 已移动到 passwordForm 对象中
 
 // 修改密码表单
-const passwordForm = reactive<ChangePasswordRequest>({
+const passwordForm = reactive<ChangePasswordRequest & { confirm_password: string }>({
   old_password: '',
-  new_password: ''
+  new_password: '',
+  confirm_password: ''
 })
 
 // 计算属性
 const completedTasksCount = computed(() =>
-  (taskStore.tasks || []).filter(task => task.status === 2).length
+  (taskStore.tasks || []).filter(task => task.status === 1).length
 )
 
 // 确认密码验证器
@@ -237,15 +241,25 @@ const handleChangePassword = async () => {
     await passwordFormRef.value.validate()
     passwordLoading.value = true
 
-    await authApi.changePassword(passwordForm)
+    await authApi.changePassword({
+      old_password: passwordForm.old_password,
+      new_password: passwordForm.new_password
+    })
 
     // 重置表单
     passwordForm.old_password = ''
     passwordForm.new_password = ''
-    confirmPassword.value = ''
+    passwordForm.confirm_password = ''
     passwordFormRef.value.clearValidate()
 
-    ElMessage.success('密码修改成功')
+    ElMessage.success('密码修改成功，请重新登录')
+
+    // 修改密码后自动登出
+    setTimeout(async () => {
+      await userStore.logout(false) // 不显示登出消息，避免重复
+      // 跳转到登录页面
+      router.push('/login')
+    }, 1500) // 延迟1.5秒，让用户看到成功消息
   } catch (error) {
     console.error('Change password error:', error)
   } finally {

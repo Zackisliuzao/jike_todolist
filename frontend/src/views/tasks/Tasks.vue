@@ -226,7 +226,7 @@ const filteredTasks = computed(() => {
 
   // 状态筛选 - 处理空字符串、null、undefined
   if (filters.status !== '' && filters.status != null && filters.status !== undefined) {
-    tasks = tasks.filter(task => task.status === filters.status)
+    tasks = tasks.filter(task => task.status === Number(filters.status))
     console.log('After status filter:', tasks.length)
   }
 
