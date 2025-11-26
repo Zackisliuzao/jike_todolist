@@ -50,9 +50,9 @@ export enum TaskPriority {
 }
 
 export enum TaskStatus {
-  TODO = 0,
-  IN_PROGRESS = 1,
-  COMPLETED = 2
+  TODO = 0,        // 未完成
+  COMPLETED = 1,   // 已完成
+  DELETED = 2      // 已删除
 }
 
 export interface Task {
@@ -61,7 +61,7 @@ export interface Task {
   title: string
   description: string
   category: string
-  priority: TaskPriority
+  priority: number
   status: TaskStatus
   due_date: string
   created_at: string
@@ -73,7 +73,7 @@ export interface CreateTaskRequest {
   title: string
   description?: string
   category?: string
-  priority?: TaskPriority
+  priority?: number
   due_date?: string
 }
 
@@ -81,7 +81,7 @@ export interface UpdateTaskRequest {
   title?: string
   description?: string
   category?: string
-  priority?: TaskPriority
+  priority?: number
   due_date?: string
 }
 

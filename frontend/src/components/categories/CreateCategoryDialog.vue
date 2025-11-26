@@ -28,7 +28,7 @@
             show-alpha
           />
           <span v-if="form.color" class="color-preview">
-            当前颜色：{{ form.color }}
+            当前颜色：{{ form.color.startsWith('#') ? form.color : rgbToHex(form.color) }}
           </span>
         </div>
       </el-form-item>
@@ -91,6 +91,41 @@ const predefineColors = [
   '#a0d911'
 ]
 
+// RGB转十六进制颜色函数
+const rgbToHex = (rgb: string): string => {
+  // 如果已经是十六进制格式，直接返回
+  if (rgb.startsWith('#')) {
+    return rgb
+  }
+
+  // 处理RGB格式: rgb(245, 34, 45)
+  const rgbMatch = rgb.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/)
+  if (rgbMatch) {
+    const r = parseInt(rgbMatch[1])
+    const g = parseInt(rgbMatch[2])
+    const b = parseInt(rgbMatch[3])
+    return '#' + [r, g, b].map(x => {
+      const hex = x.toString(16)
+      return hex.length === 1 ? '0' + hex : hex
+    }).join('')
+  }
+
+  // 处理RGBA格式: rgba(245, 34, 45, 0.8)
+  const rgbaMatch = rgb.match(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*[\d.]+\)/)
+  if (rgbaMatch) {
+    const r = parseInt(rgbaMatch[1])
+    const g = parseInt(rgbaMatch[2])
+    const b = parseInt(rgbaMatch[3])
+    return '#' + [r, g, b].map(x => {
+      const hex = x.toString(16)
+      return hex.length === 1 ? '0' + hex : hex
+    }).join('')
+  }
+
+  // 默认返回蓝色
+  return '#1890ff'
+}
+
 // 表单数据
 const form = reactive<CreateCategoryRequest>({
   name: '',
@@ -129,7 +164,13 @@ const handleSubmit = async () => {
     await formRef.value.validate()
     loading.value = true
 
-    await taskStore.createCategory(form)
+    // 转换颜色格式
+    const categoryData = {
+      ...form,
+      color: rgbToHex(form.color)
+    }
+
+    await taskStore.createCategory(categoryData)
     emit('success')
   } catch (error) {
     console.error('Create category error:', error)

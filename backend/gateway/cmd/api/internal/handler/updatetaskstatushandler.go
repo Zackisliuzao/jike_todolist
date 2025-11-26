@@ -5,6 +5,7 @@ package handler
 
 import (
 	"net/http"
+	"strings"
 
 	"jike_todo/gateway/cmd/api/internal/logic"
 	"jike_todo/gateway/cmd/api/internal/svc"
@@ -23,14 +24,14 @@ func UpdateTaskStatusHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		// 从URL路径参数中获取任务ID
-		idStr := r.URL.Query().Get("id")
-		if idStr == "" {
-			// 尝试从路径中解析
-			pathVars := r.Context().Value("path_params")
-			if pathVars != nil {
-				if params, ok := pathVars.(map[string]string); ok {
-					idStr = params["id"]
-				}
+		// 路径格式为 /api/v1/tasks/:id/status，我们需要提取 :id 部分
+		pathParts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
+		idStr := ""
+		// 寻找 "tasks" 后面的数字ID
+		for i, part := range pathParts {
+			if part == "tasks" && i+1 < len(pathParts) {
+				idStr = pathParts[i+1]
+				break
 			}
 		}
 

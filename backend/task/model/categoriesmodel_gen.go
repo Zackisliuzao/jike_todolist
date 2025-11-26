@@ -112,12 +112,11 @@ func (m *defaultCategoriesModel) FindOneByUserIdName(ctx context.Context, userId
 }
 
 func (m *defaultCategoriesModel) Insert(ctx context.Context, data *Categories) (sql.Result, error) {
-	categoriesIdKey := fmt.Sprintf("%s%v", cacheCategoriesIdPrefix, data.Id)
 	categoriesUserIdNameKey := fmt.Sprintf("%s%v:%v", cacheCategoriesUserIdNamePrefix, data.UserId, data.Name)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?)", m.table, categoriesRowsExpectAutoSet)
 		return conn.ExecCtx(ctx, query, data.UserId, data.Name, data.Color)
-	}, categoriesIdKey, categoriesUserIdNameKey)
+	}, categoriesUserIdNameKey)
 	return ret, err
 }
 

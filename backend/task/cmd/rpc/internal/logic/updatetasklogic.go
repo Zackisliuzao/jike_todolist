@@ -59,9 +59,9 @@ func (l *UpdateTaskLogic) UpdateTask(in *task.UpdateTaskRequest) (*task.Task, er
 	}
 	if in.DueDate != "" {
 		dueDate, err := tool.ParseNullableDate(in.DueDate)
-		if err != nil {
+		if err != nil || !dueDate.Valid {
 			l.Errorf("无效的截止日期格式: %s, error: %v", in.DueDate, err)
-			return nil, fmt.Errorf("截止日期格式无效，请使用 YYYY-MM-DD 格式")
+			return nil, fmt.Errorf("截止日期格式无效，支持的格式: YYYY-MM-DD, YYYY-MM-DD HH:MM:SS")
 		}
 		taskRecord.DueDate = dueDate
 	}

@@ -5,6 +5,7 @@ package handler
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"jike_todo/gateway/cmd/api/internal/logic"
@@ -22,12 +23,11 @@ func UpdateTaskHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		// 从URL路径参数中获取任务ID
+		pathParts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
 		taskIdStr := ""
-		pathVars := r.Context().Value("path_params")
-		if pathVars != nil {
-			if params, ok := pathVars.(map[string]string); ok {
-				taskIdStr = params["id"]
-			}
+		if len(pathParts) > 0 {
+			// 从路径末尾获取ID，路径格式为 /tasks/:id
+			taskIdStr = pathParts[len(pathParts)-1]
 		}
 
 		l := logic.NewUpdateTaskLogic(r.Context(), svcCtx)

@@ -9,8 +9,7 @@ import type {
   GetTasksResponse,
   Category,
   CreateCategoryRequest,
-  TaskStatus,
-  TaskPriority
+  TaskStatus
 } from '@/api/types'
 import { ElMessage } from 'element-plus'
 
@@ -44,9 +43,13 @@ export const useTaskStore = defineStore('task', () => {
   const createTask = async (data: CreateTaskRequest) => {
     try {
       const response = await taskApi.createTask(data)
-      tasks.value.unshift(response.data)
-      ElMessage.success('任务创建成功')
-      return Promise.resolve(response.data)
+      if (response && response.data) {
+        tasks.value.unshift(response.data)
+        ElMessage.success('任务创建成功')
+        return Promise.resolve(response.data)
+      } else {
+        throw new Error('创建任务时API返回数据格式错误')
+      }
     } catch (error) {
       return Promise.reject(error)
     }
@@ -66,12 +69,16 @@ export const useTaskStore = defineStore('task', () => {
   const updateTask = async (id: number, data: UpdateTaskRequest) => {
     try {
       const response = await taskApi.updateTask(id, data)
-      const index = tasks.value.findIndex(task => task.id === id)
-      if (index !== -1) {
-        tasks.value[index] = response.data
+      if (response && response.data) {
+        const index = tasks.value.findIndex(task => task && task.id === id)
+        if (index !== -1) {
+          tasks.value[index] = response.data
+        }
+        ElMessage.success('任务更新成功')
+        return Promise.resolve(response.data)
+      } else {
+        throw new Error('更新任务时API返回数据格式错误')
       }
-      ElMessage.success('任务更新成功')
-      return Promise.resolve(response.data)
     } catch (error) {
       return Promise.reject(error)
     }
@@ -94,15 +101,20 @@ export const useTaskStore = defineStore('task', () => {
   }
 
   // 更新任务状态
-  const updateTaskStatus = async (id: number, status: TaskStatus) => {
+  const updateTaskStatus = async (id: number, status: number) => {
     try {
       const response = await taskApi.updateTaskStatus(id, status)
-      const index = tasks.value.findIndex(task => task.id === id)
-      if (index !== -1) {
-        tasks.value[index] = response.data
+      // 验证响应数据
+      if (response && response.data) {
+        const index = tasks.value.findIndex(task => task && task.id === id)
+        if (index !== -1) {
+          tasks.value[index] = response.data
+        }
+        ElMessage.success('任务状态更新成功')
+        return Promise.resolve(response.data)
+      } else {
+        throw new Error('API返回数据格式错误')
       }
-      ElMessage.success('任务状态更新成功')
-      return Promise.resolve(response.data)
     } catch (error) {
       return Promise.reject(error)
     }
@@ -112,7 +124,7 @@ export const useTaskStore = defineStore('task', () => {
   const fetchCategories = async () => {
     try {
       const response = await taskApi.getCategories()
-      categories.value = response.data || []
+      categories.value = (response.data || []).filter(Boolean)
       return Promise.resolve()
     } catch (error) {
       categories.value = []  // 失败时设置为空数组
@@ -132,28 +144,58 @@ export const useTaskStore = defineStore('task', () => {
     }
   }
 
+  // 更新分类
+  const updateCategory = async (id: number, data: CreateCategoryRequest) => {
+    try {
+      const response = await taskApi.updateCategory(id, data)
+      const index = categories.value.findIndex(cat => cat.id === id)
+      if (index !== -1) {
+        categories.value[index] = response.data
+      }
+      ElMessage.success('分类更新成功')
+      return Promise.resolve(response.data)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+
+  // 删除分类
+  const deleteCategory = async (id: number) => {
+    try {
+      await taskApi.deleteCategory(id)
+      const index = categories.value.findIndex(cat => cat.id === id)
+      if (index !== -1) {
+        categories.value.splice(index, 1)
+      }
+      ElMessage.success('分类删除成功')
+      return Promise.resolve()
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+
   // 获取状态文本
-  const getStatusText = (status: TaskStatus): string => {
+  const getStatusText = (status: number): string => {
     switch (status) {
-      case TaskStatus.TODO:
-        return '待办'
-      case TaskStatus.IN_PROGRESS:
-        return '进行中'
-      case TaskStatus.COMPLETED:
+      case 0: // TODO: 未完成
+        return '未完成'
+      case 1: // COMPLETED: 已完成
         return '已完成'
+      case 2: // DELETED: 已删除
+        return '已删除'
       default:
         return '未知'
     }
   }
 
   // 获取优先级文本
-  const getPriorityText = (priority: TaskPriority): string => {
+  const getPriorityText = (priority: number): string => {
     switch (priority) {
-      case TaskPriority.LOW:
+      case 1: // LOW
         return '低'
-      case TaskPriority.MEDIUM:
+      case 2: // MEDIUM
         return '中'
-      case TaskPriority.HIGH:
+      case 3: // HIGH
         return '高'
       default:
         return '未知'
@@ -161,13 +203,13 @@ export const useTaskStore = defineStore('task', () => {
   }
 
   // 获取优先级颜色
-  const getPriorityColor = (priority: TaskPriority): string => {
+  const getPriorityColor = (priority: number): string => {
     switch (priority) {
-      case TaskPriority.LOW:
+      case 1: // LOW
         return '#909399'
-      case TaskPriority.MEDIUM:
+      case 2: // MEDIUM
         return '#e6a23c'
-      case TaskPriority.HIGH:
+      case 3: // HIGH
         return '#f56c6c'
       default:
         return '#909399'
@@ -187,6 +229,8 @@ export const useTaskStore = defineStore('task', () => {
     updateTaskStatus,
     fetchCategories,
     createCategory,
+    updateCategory,
+    deleteCategory,
     getStatusText,
     getPriorityText,
     getPriorityColor

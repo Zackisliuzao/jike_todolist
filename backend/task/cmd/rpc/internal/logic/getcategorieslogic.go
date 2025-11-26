@@ -25,34 +25,24 @@ func NewGetCategoriesLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Get
 }
 
 func (l *GetCategoriesLogic) GetCategories(in *task.GetCategoriesRequest) (*task.GetCategoriesResponse, error) {
-	// 简化实现：返回默认分类和示例数据
-	// 实际项目中需要从数据库查询用户的分类
+	// 从数据库查询用户的分类
+	categoryRecords, err := l.svcCtx.CateModel.FindByUserId(l.ctx, in.UserId)
+	if err != nil {
+		l.Errorf("查询用户分类失败: %v", err)
+		return nil, err
+	}
 
-	categories := []*task.Category{
-		{
-			Id:        1,
-			UserId:    in.UserId,
-			Name:      "工作",
-			Color:     "#1890ff",
-			CreatedAt: time.Now().Format(time.RFC3339),
-			UpdatedAt: time.Now().Format(time.RFC3339),
-		},
-		{
-			Id:        2,
-			UserId:    in.UserId,
-			Name:      "学习",
-			Color:     "#52c41a",
-			CreatedAt: time.Now().Format(time.RFC3339),
-			UpdatedAt: time.Now().Format(time.RFC3339),
-		},
-		{
-			Id:        3,
-			UserId:    in.UserId,
-			Name:      "生活",
-			Color:     "#faad14",
-			CreatedAt: time.Now().Format(time.RFC3339),
-			UpdatedAt: time.Now().Format(time.RFC3339),
-		},
+	// 转换为RPC响应格式
+	categories := make([]*task.Category, 0, len(categoryRecords))
+	for _, record := range categoryRecords {
+		categories = append(categories, &task.Category{
+			Id:        record.Id,
+			UserId:    record.UserId,
+			Name:      record.Name,
+			Color:     record.Color,
+			CreatedAt: record.CreatedAt.Format(time.RFC3339),
+			UpdatedAt: record.UpdatedAt.Format(time.RFC3339),
+		})
 	}
 
 	return &task.GetCategoriesResponse{

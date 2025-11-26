@@ -40,9 +40,9 @@ func (l *CreateTaskLogic) CreateTask(in *task.CreateTaskRequest) (*task.Task, er
 
 	// 处理截止日期
 	dueDate, err := tool.ParseNullableDate(in.DueDate)
-	if err != nil {
+	if err != nil || !dueDate.Valid {
 		l.Errorf("无效的截止日期格式: %s, error: %v", in.DueDate, err)
-		return nil, fmt.Errorf("截止日期格式无效，请使用 YYYY-MM-DD 格式")
+		return nil, fmt.Errorf("截止日期格式无效，支持的格式: YYYY-MM-DD, YYYY-MM-DD HH:MM:SS")
 	}
 
 	// 创建任务记录
@@ -54,6 +54,7 @@ func (l *CreateTaskLogic) CreateTask(in *task.CreateTaskRequest) (*task.Task, er
 		Priority:    int64(in.Priority),
 		Status:      0, // 默认未完成
 		DueDate:     dueDate,
+		CompletedAt: sql.NullTime{Valid: false}, // 初始化为NULL
 	}
 
 	result, err := l.svcCtx.TaskModel.Insert(l.ctx, taskRecord)

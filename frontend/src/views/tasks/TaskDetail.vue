@@ -32,10 +32,10 @@
 
           <div class="task-actions">
             <el-button
-              :type="task.status === 2 ? 'warning' : 'success'"
+              :type="task.status === 1 ? 'warning' : 'success'"
               @click="toggleTaskStatus"
             >
-              {{ task.status === 2 ? '标记为未完成' : '标记为已完成' }}
+              {{ task.status === 1 ? '标记为未完成' : '标记为已完成' }}
             </el-button>
             <el-button @click="showEditDialog = true">
               编辑
@@ -102,7 +102,7 @@ import { ElMessageBox } from 'element-plus'
 import { ArrowLeft } from '@element-plus/icons-vue'
 import dayjs from 'dayjs'
 import { useTaskStore } from '@/stores/task'
-import { TaskStatus, type Task } from '@/api/types'
+import type { Task } from '@/api/types'
 import EditTaskDialog from '@/components/tasks/EditTaskDialog.vue'
 
 const route = useRoute()
@@ -115,14 +115,14 @@ const task = ref<Task | null>(null)
 const showEditDialog = ref(false)
 
 // 获取状态类型
-const getStatusType = (status: TaskStatus) => {
+const getStatusType = (status: number) => {
   switch (status) {
-    case TaskStatus.TODO:
+    case 0: // 未完成
       return 'info'
-    case TaskStatus.IN_PROGRESS:
-      return 'warning'
-    case TaskStatus.COMPLETED:
+    case 1: // 已完成
       return 'success'
+    case 2: // 已删除
+      return 'danger'
     default:
       return 'info'
   }
@@ -161,13 +161,18 @@ const fetchTask = async () => {
 const toggleTaskStatus = async () => {
   if (!task.value) return
 
-  const newStatus = task.value.status === TaskStatus.COMPLETED
-    ? TaskStatus.TODO
-    : TaskStatus.COMPLETED
+  const newStatus = task.value.status === 1
+    ? 0
+    : 1
 
   try {
-    await taskStore.updateTaskStatus(task.value.id, newStatus)
-    task.value.status = newStatus
+    const updatedTask = await taskStore.updateTaskStatus(task.value.id, newStatus)
+    // 使用API返回的最新数据更新本地task，避免数据不一致
+    if (updatedTask && task.value) {
+      task.value = updatedTask
+      // 刷新任务列表以确保状态同步
+      await taskStore.fetchTasks()
+    }
   } catch (error) {
     console.error('Update task status error:', error)
   }

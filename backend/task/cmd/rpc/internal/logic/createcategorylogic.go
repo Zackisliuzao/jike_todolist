@@ -42,11 +42,13 @@ func (l *CreateCategoryLogic) CreateCategory(in *task.CreateCategoryRequest) (*t
 		UpdatedAt: time.Now(),
 	}
 
+	l.Infof("准备插入分类记录: %+v", categoryRecord)
 	result, err := l.svcCtx.CateModel.Insert(l.ctx, categoryRecord)
 	if err != nil {
 		l.Errorf("插入分类失败: %v", err)
-		return nil, fmt.Errorf("创建分类失败")
+		return nil, fmt.Errorf("创建分类失败: %v", err)
 	}
+	l.Infof("插入分类成功")
 
 	categoryId, err := result.LastInsertId()
 	if err != nil {

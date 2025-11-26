@@ -24,9 +24,9 @@
             @change="handleFilterChange"
           >
             <el-option label="全部" value="" />
-            <el-option label="待办" :value="TaskStatus.TODO" />
-            <el-option label="进行中" :value="TaskStatus.IN_PROGRESS" />
-            <el-option label="已完成" :value="TaskStatus.COMPLETED" />
+            <el-option label="未完成" :value="0" />
+            <el-option label="已完成" :value="1" />
+            <!-- <el-option label="已删除" :value="2" /> -->
           </el-select>
         </el-col>
         <el-col :span="6">
@@ -71,7 +71,7 @@
           <div class="stat-label">待办</div>
         </div>
       </div>
-      <div class="stat-card">
+      <!-- <div class="stat-card">
         <div class="stat-icon progress">
           <el-icon><Loading /></el-icon>
         </div>
@@ -79,7 +79,7 @@
           <div class="stat-number">{{ inProgressCount }}</div>
           <div class="stat-label">进行中</div>
         </div>
-      </div>
+      </div> -->
       <div class="stat-card">
         <div class="stat-icon completed">
           <el-icon><CircleCheck /></el-icon>
@@ -111,12 +111,12 @@
           >
             <div class="task-left">
               <el-checkbox
-                :model-value="task.status === TaskStatus.COMPLETED"
+                :model-value="task.status === 1"
                 @change="handleStatusChange(task.id, $event)"
                 @click.stop
               />
               <div class="task-content">
-                <h3 class="task-title" :class="{ completed: task.status === TaskStatus.COMPLETED }">
+                <h3 class="task-title" :class="{ completed: task.status === 1 }">
                   {{ task.title }}
                 </h3>
                 <p v-if="task.description" class="task-description">
@@ -198,7 +198,7 @@ import {
 } from '@element-plus/icons-vue'
 import dayjs from 'dayjs'
 import { useTaskStore } from '@/stores/task'
-import { TaskStatus, type Task } from '@/api/types'
+import type { Task } from '@/api/types'
 import CreateTaskDialog from '@/components/tasks/CreateTaskDialog.vue'
 import EditTaskDialog from '@/components/tasks/EditTaskDialog.vue'
 
@@ -213,17 +213,21 @@ const searchKeyword = ref('')
 
 // 筛选器
 const filters = reactive({
-  status: '' as TaskStatus | '',
+  status: '' as string,
   category: ''
 })
 
 // 过滤后的任务
 const filteredTasks = computed(() => {
-  let tasks = taskStore.tasks || []
+  let tasks = (taskStore.tasks || []).filter(task => task) // 首先过滤掉undefined任务
 
-  // 状态筛选
-  if (filters.status !== '') {
+  console.log('Original tasks count:', tasks.length)
+  console.log('Current filters:', filters.status, filters.category)
+
+  // 状态筛选 - 处理空字符串、null、undefined
+  if (filters.status !== '' && filters.status != null && filters.status !== undefined) {
     tasks = tasks.filter(task => task.status === filters.status)
+    console.log('After status filter:', tasks.length)
   }
 
   // 分类筛选
@@ -238,20 +242,21 @@ const filteredTasks = computed(() => {
     )
   }
 
+  console.log('Final filtered tasks count:', tasks.length)
   return tasks
 })
 
 // 任务统计
 const todoCount = computed(() =>
-  (taskStore.tasks || []).filter(task => task.status === TaskStatus.TODO).length
+  (taskStore.tasks || []).filter(task => task && task.status === 0).length
 )
 
 const inProgressCount = computed(() =>
-  (taskStore.tasks || []).filter(task => task.status === TaskStatus.IN_PROGRESS).length
+  0 // 没有进行中状态，数据库中没有这个状态
 )
 
 const completedCount = computed(() =>
-  (taskStore.tasks || []).filter(task => task.status === TaskStatus.COMPLETED).length
+  (taskStore.tasks || []).filter(task => task && task.status === 1).length
 )
 
 // 格式化日期
@@ -262,6 +267,8 @@ const formatDate = (dateStr: string) => {
 // 处理筛选变化
 const handleFilterChange = () => {
   // 筛选会自动通过计算属性生效
+  console.log('Filter changed:', filters.status, filters.category)
+  console.log('Task store count:', taskStore.tasks?.length)
 }
 
 // 处理搜索
@@ -280,7 +287,7 @@ const fetchTasks = async () => {
 
 // 处理任务状态变化
 const handleStatusChange = async (taskId: number, checked: boolean) => {
-  const newStatus = checked ? TaskStatus.COMPLETED : TaskStatus.TODO
+  const newStatus = checked ? 1 : 0
   try {
     await taskStore.updateTaskStatus(taskId, newStatus)
   } catch (error) {
@@ -379,7 +386,7 @@ onMounted(async () => {
 
 .stats-row {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
   margin-bottom: 20px;
 }

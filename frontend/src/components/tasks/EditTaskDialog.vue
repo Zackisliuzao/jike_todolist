@@ -52,9 +52,9 @@
           placeholder="选择优先级"
           style="width: 100%"
         >
-          <el-option label="低" :value="TaskPriority.LOW" />
-          <el-option label="中" :value="TaskPriority.MEDIUM" />
-          <el-option label="高" :value="TaskPriority.HIGH" />
+          <el-option label="低" :value="1" />
+          <el-option label="中" :value="2" />
+          <el-option label="高" :value="3" />
         </el-select>
       </el-form-item>
 
@@ -119,7 +119,7 @@ const form = reactive<UpdateTaskRequest>({
   title: '',
   description: '',
   category: '',
-  priority: TaskPriority.MEDIUM,
+  priority: 2, // MEDIUM
   due_date: ''
 })
 
@@ -150,7 +150,7 @@ const resetForm = () => {
   form.title = ''
   form.description = ''
   form.category = ''
-  form.priority = TaskPriority.MEDIUM
+  form.priority = 2 // MEDIUM
   form.due_date = ''
   formRef.value?.clearValidate()
 }

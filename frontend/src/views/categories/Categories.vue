@@ -16,7 +16,7 @@
     <!-- 分类列表 -->
     <div class="categories-grid">
       <el-card v-loading="taskStore.loading">
-        <div v-if="taskStore.categories.length === 0" class="empty-state">
+        <div v-if="(taskStore.categories || []).length === 0" class="empty-state">
           <el-empty description="暂无分类">
             <el-button type="primary" @click="showCreateDialog = true">
               创建第一个分类
@@ -26,7 +26,7 @@
 
         <div v-else class="category-list">
           <div
-            v-for="category in taskStore.categories"
+            v-for="category in (taskStore.categories || []).filter(Boolean)"
             :key="category.id"
             class="category-item"
           >
@@ -133,9 +133,8 @@ const handleDelete = async (category: Category) => {
       }
     )
 
-    // 这里应该调用删除分类的API
-    // await taskStore.deleteCategory(category.id)
-    ElMessage.success('删除成功')
+    // 调用删除分类的API
+    await taskStore.deleteCategory(category.id)
     await taskStore.fetchCategories()
   } catch (error) {
     // 用户取消操作

@@ -27,10 +27,21 @@ func ParseNullableDate(dateStr string) (sql.NullTime, error) {
 		return sql.NullTime{Valid: false}, nil
 	}
 
-	parsedDate, err := time.Parse("2006-01-02", dateStr)
-	if err != nil {
-		return sql.NullTime{Valid: false}, err
+	// 支持多种日期格式
+	dateFormats := []string{
+		"2006-01-02",                 // YYYY-MM-DD
+		"2006-01-02 15:04:05",       // YYYY-MM-DD HH:MM:SS
+		time.RFC3339,                // RFC3339 format (with timezone)
+		"2006-01-02T15:04:05Z07:00", // ISO8601 format with timezone
+		"2006-01-02T15:04:05",      // ISO8601 format without timezone
 	}
 
-	return sql.NullTime{Time: parsedDate, Valid: true}, nil
+	for _, format := range dateFormats {
+		parsedDate, err := time.Parse(format, dateStr)
+		if err == nil {
+			return sql.NullTime{Time: parsedDate, Valid: true}, nil
+		}
+	}
+
+	return sql.NullTime{Valid: false}, nil
 }

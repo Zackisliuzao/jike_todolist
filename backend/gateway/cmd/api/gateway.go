@@ -39,7 +39,7 @@ func main() {
 			if origin != "" {
 				w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 				w.Header().Set("Access-Control-Allow-Credentials", "true")
-				w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+				w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH")
 				w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, Authorization, X-Requested-With")
 				w.Header().Set("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin")
 				w.Header().Set("Access-Control-Max-Age", "86400")
