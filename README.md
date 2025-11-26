@@ -203,8 +203,8 @@ go run gateway.go
 
 ```bash
 cd frontend
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 ### 6. 访问应用
