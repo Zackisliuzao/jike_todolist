@@ -6,9 +6,10 @@ package handler
 import (
 	"net/http"
 
-	"github.com/zeromicro/go-zero/rest/httpx"
 	"jike_todo/gateway/cmd/api/internal/logic"
 	"jike_todo/gateway/cmd/api/internal/svc"
+
+	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
 // Get user profile

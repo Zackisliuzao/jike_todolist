@@ -43,7 +43,7 @@
               </div>
             </div>
             <div class="category-right">
-              <el-dropdown @command="(cmd) => handleAction(cmd, category)">
+              <el-dropdown @command="(cmd: string) => handleAction(cmd, category)">
                 <el-button text :icon="MoreFilled" />
                 <template #dropdown>
                   <el-dropdown-menu>
@@ -82,6 +82,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { ElMessageBox } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import {
   Plus,
   MoreFilled,

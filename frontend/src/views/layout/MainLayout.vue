@@ -24,7 +24,7 @@
         class="sidebar-menu"
         background-color="#001529"
         text-color="#fff"
-        active-text-color="#1890ff"
+        active-text-color="#fff"
       >
         <el-menu-item index="/dashboard/tasks">
           <el-icon><List /></el-icon>
