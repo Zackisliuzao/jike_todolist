@@ -146,7 +146,7 @@
               </div>
             </div>
             <div class="task-right">
-              <el-dropdown @command="(cmd) => handleTaskAction(cmd, task)" @click.stop>
+              <el-dropdown @command="(cmd: string) => handleTaskAction(cmd, task)" @click.stop>
                 <el-button text :icon="MoreFilled" />
                 <template #dropdown>
                   <el-dropdown-menu>
