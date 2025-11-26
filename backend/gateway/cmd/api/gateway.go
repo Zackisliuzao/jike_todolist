@@ -31,6 +31,30 @@ func main() {
 	}))
 	defer server.Stop()
 
+	// 应用 CORS 中间件
+	server.Use(func(next http.HandlerFunc) http.HandlerFunc {
+		return func(w http.ResponseWriter, r *http.Request) {
+			// 设置 CORS 头
+			origin := r.Header.Get("Origin")
+			if origin != "" {
+				w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+				w.Header().Set("Access-Control-Allow-Credentials", "true")
+				w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+				w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, Authorization, X-Requested-With")
+				w.Header().Set("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin")
+				w.Header().Set("Access-Control-Max-Age", "86400")
+			}
+
+			// 处理预检请求
+			if r.Method == "OPTIONS" {
+				w.WriteHeader(http.StatusNoContent)
+				return
+			}
+
+			next(w, r)
+		}
+	})
+
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
 

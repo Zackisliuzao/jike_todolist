@@ -21,3 +21,25 @@ JwtAuth:
 
 Log:
   Encoding: plain
+
+Cors:
+  AllowOrigins:
+    - "http://localhost:3000"
+    - "http://127.0.0.1:3000"
+  AllowMethods:
+    - "GET"
+    - "POST"
+    - "PUT"
+    - "DELETE"
+    - "OPTIONS"
+  AllowHeaders:
+    - "Origin"
+    - "Content-Type"
+    - "Accept"
+    - "Authorization"
+    - "X-Requested-With"
+  ExposeHeaders:
+    - "Content-Length"
+    - "Access-Control-Allow-Origin"
+  AllowCredentials: true
+  MaxAge: 86400
