@@ -28,7 +28,7 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 	}
 }
 
-func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.AuthResp, err error) {
+func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.BaseResponse, err error) {
 	// 调用用户RPC服务
 	rpcResp, err := l.svcCtx.UserRpc.Register(l.ctx, &user.RegisterRequest{
 		Username: req.Username,
@@ -38,12 +38,15 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.AuthResp, 
 	})
 	if err != nil {
 		l.Errorf("注册失败: %v", err)
-		return nil, err
+		return &types.BaseResponse{
+			Code:    500,
+			Message: "注册失败: " + err.Error(),
+		}, err
 	}
 
-	// 手动复制响应数据
-	resp = &types.AuthResp{}
-	resp.User = types.UserInfo{
+	// 构建认证响应数据
+	authData := &types.AuthResp{}
+	authData.User = types.UserInfo{
 		ID:        rpcResp.User.Id,
 		Username:  rpcResp.User.Username,
 		Email:     rpcResp.User.Email,
@@ -52,9 +55,14 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.AuthResp, 
 		Status:    rpcResp.User.Status,
 		CreatedAt: rpcResp.User.CreatedAt,
 	}
-	resp.AccessToken = rpcResp.AccessToken
-	resp.RefreshToken = rpcResp.RefreshToken
-	resp.ExpiresAt = rpcResp.ExpiresAt
+	authData.AccessToken = rpcResp.AccessToken
+	authData.RefreshToken = rpcResp.RefreshToken
+	authData.ExpiresAt = rpcResp.ExpiresAt
 
-	return resp, nil
+	// 返回统一格式的响应
+	return &types.BaseResponse{
+		Code:    200,
+		Message: "注册成功",
+		Data:    authData,
+	}, nil
 }

@@ -59,7 +59,7 @@ func (l *GetProfileLogic) GetProfile() (resp *types.BaseResponse, err error) {
 	}
 
 	return &types.BaseResponse{
-		Code:    0,
+		Code:    200,
 		Message: "获取用户信息成功",
 		Data:    userInfo,
 	}, nil
